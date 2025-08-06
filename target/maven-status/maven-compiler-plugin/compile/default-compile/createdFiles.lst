@@ -1,3 +1,4 @@
 com/example/awsProject/S3Service.class
 com/example/awsProject/AwsProjectApplication.class
 com/example/awsProject/SnsService.class
+com/example/awsProject/FileController.class

@@ -16,18 +16,21 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 public class FileController {
     @Autowired
     private S3Service s3Service;
-
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            String s3Url = s3Service.uploadFile(file);
+            String fileName = file.getOriginalFilename(); 
+            String s3Url = s3Service.uploadFile(file);   
+    
+            SnsService snsService = new SnsService();     
+            snsService.notify(fileName);                
+    
             return ResponseEntity.ok("File uploaded successfully: " + s3Url);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
-
 
     @PostMapping("/get")
     public ResponseEntity<String>getFile() {

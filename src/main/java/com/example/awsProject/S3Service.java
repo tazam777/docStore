@@ -18,12 +18,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class S3Service {
-    // Copy-paste, but update region and bucket name to match your setup!
     private final S3Client s3Client = S3Client.builder().region(Region.US_EAST_2).build();
-    private final String bucket = "pdf.upload-1"; // <-- Your bucket name
+    private final String bucket = "pdf.upload-1"; 
 
     public String uploadFile(MultipartFile file) throws IOException {
-        String key = file.getOriginalFilename(); // Use original filename as key 
+        String key = file.getOriginalFilename(); 
         s3Client.putObject(
                 PutObjectRequest.builder()
                         .bucket(bucket)
