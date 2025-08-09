@@ -41,5 +41,5 @@ jobs:
           for host in 18.224.182.35 3.144.201.102; do
             echo "Deploying to $host..."
             scp -o StrictHostKeyChecking=no -i ec2-key.pem yaml.sh ec2-user@$host:/home/ec2-user/
-            ssh -o StrictHostKeyChecking=no -i ec2-key.pem ec2-user@$host "bash deploy.sh"
+            ssh -o StrictHostKeyChecking=no -i ec2-key.pem ec2-user@$host "bash yaml.sh"
           done
