@@ -1,30 +1,28 @@
-
-
-
 package com.example.awsProject;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import software.amazon.awssdk.services.s3.model.S3Object;
-
-
 @RestController
-
 public class FileController {
-    @Autowired
-    private S3Service s3Service;
+
+    private final S3Service s3Service;
+    private final SnsService snsService;
+
+    public FileController(S3Service s3Service, SnsService snsService) {
+        this.s3Service = s3Service;
+        this.snsService = snsService;
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            String fileName = file.getOriginalFilename(); 
-            String s3Url = s3Service.uploadFile(file);   
-    
-            SnsService snsService = new SnsService();     
-            snsService.notify(fileName);                
-    
+            String fileName = file.getOriginalFilename();
+            String s3Url = s3Service.uploadFile(file);
+
+            snsService.notify(fileName);
+
             return ResponseEntity.ok("File uploaded successfully: " + s3Url);
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,23 +30,14 @@ public class FileController {
         }
     }
 
-    @PostMapping("/get")
-    public ResponseEntity<String>getFile() {
-    try {
-
-        
-
-        System.out.println(s3Service.getFile());
-        return ResponseEntity.status(200).body("Sucess");
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(500).body("Error: " + e.getMessage());
+    @GetMapping("/get")
+    public ResponseEntity<String> getFile() {
+        try {
+            System.out.println(s3Service.getFile());
+            return ResponseEntity.ok("Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
     }
 }
-
-
-
- 
-}
-
-    

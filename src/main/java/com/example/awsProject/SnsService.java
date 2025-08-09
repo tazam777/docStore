@@ -1,28 +1,38 @@
-
 package com.example.awsProject;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sns.model.PublishRequest;
+import software.amazon.awssdk.services.sns.model.PublishResponse;
 
+@Service
 public class SnsService {
 
-    private final SnsClient snsClient = SnsClient.builder()
-            .region(Region.US_EAST_2)
-            .build();
+    private final SnsClient snsClient;
+    private final String topicArn;
 
-    public static final String topicArn = "arn:aws:sns:us-east-2:033376538641:pdfUploadNotify";
+    public SnsService(
+            @Value("${app.sns.topic-arn}") String topicArn,
+            @Value("${AWS_REGION:us-east-2}") String region // falls back to us-east-2
+    ) {
+        this.snsClient = SnsClient.builder()
+                .region(Region.of(region))
+                .build();
+        this.topicArn = topicArn;
+    }
 
     public void notify(String fileName) {
         String message = "File uploaded is " + fileName;
 
-        PublishRequest request = PublishRequest.builder()
+        PublishRequest req = PublishRequest.builder()
                 .topicArn(topicArn)
-                .subject("New File Upload")
+                .subject("New File Upload") // only shows in email subscriptions
                 .message(message)
                 .build();
 
-        snsClient.publish(request);
-        System.out.println("Email sent via SNS for file: " + fileName);
+        PublishResponse res = snsClient.publish(req);
+        System.out.println("SNS published. MessageId=" + res.messageId());
     }
 }
