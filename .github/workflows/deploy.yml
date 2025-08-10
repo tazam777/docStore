@@ -46,14 +46,14 @@ jobs:
             | docker login --username AWS --password-stdin $ECR_REPO
 
           echo "Stopping old container..."
-          docker ps -q --filter "name=app" | xargs -r docker stop || true
-          docker ps -aq --filter "name=app" | xargs -r docker rm || true
+          sudo docker ps -q --filter "name=app" | xargs -r docker stop || true
+          sudo docker ps -aq --filter "name=app" | xargs -r docker rm || true
 
           echo "Pulling latest image..."
-          docker pull $ECR_REPO:latest
+          sudo docker pull $ECR_REPO:latest
 
           echo "Starting new container..."
-          docker run -d --name app -p 8080:8080 $ECR_REPO:latest
+          sudo docker run -d --name app -p 8080:8080 $ECR_REPO:latest
           EOL
           chmod +x deploy-gha.sh
 
