@@ -46,8 +46,8 @@ jobs:
             | sudo docker login --username AWS --password-stdin $ECR_REPO
 
           echo "Stopping old container..."
-          sudo docker ps -q --filter "name=app" | xargs -r docker stop || true
-          sudo docker ps -aq --filter "name=app" | xargs -r docker rm || true
+          sudo docker ps -q --filter "name=app" | xargs -r sudo docker stop || true
+          sudo docker ps -aq --filter "name=app" | xargs -r sudo docker rm || true
 
           echo "Pulling latest image..."
           sudo docker pull $ECR_REPO:latest
