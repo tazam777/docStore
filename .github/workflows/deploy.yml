@@ -43,7 +43,7 @@ jobs:
 
           echo "Logging into ECR..."
           aws ecr get-login-password --region $AWS_REGION \
-            | docker login --username AWS --password-stdin $ECR_REPO
+            | sudo docker login --username AWS --password-stdin $ECR_REPO
 
           echo "Stopping old container..."
           sudo docker ps -q --filter "name=app" | xargs -r docker stop || true
