@@ -1,19 +1,15 @@
 terraform {
-  required_version = ">= 1.6.0"
-  required_providers {
-    aws    = { source = "hashicorp/aws", version = "~> 5.50" }
-    random = { source = "hashicorp/random", version = "~> 3.6" }
-    tls    = { source = "hashicorp/tls", version = "~> 4.0" }
-  }
-
   backend "s3" {
-    bucket         = "tf-state-bk1" 
-    key            = "terraform.tfstate"
-    region         = "us-east-2"
-    dynamodb_table = "terraform-locks" 
-    encrypt        = true
+    bucket         = "tf-state-bk1"             # Your S3 bucket for state
+    key            = "terraform.tfstate"        # Path/key inside the bucket
+    region         = "us-east-2"                 # Your AWS region
+    dynamodb_table = "tf-state-lock"             # DynamoDB table for state locking
+    encrypt        = true                        # Encrypt state file at rest
   }
 }
+
+
+
 
 provider "aws" {
   region = var.region
