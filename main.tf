@@ -155,11 +155,13 @@ resource "aws_iam_role" "ec2_role" {
   assume_role_policy = data.aws_iam_policy_document.assume_ec2.json
 }
 
+# Allow EC2 to pull images from ECR
 resource "aws_iam_role_policy_attachment" "ecr_read" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
+# Custom policy for S3 and SNS
 data "aws_iam_policy_document" "app_access" {
   statement {
     effect    = "Allow"
@@ -188,10 +190,32 @@ resource "aws_iam_role_policy_attachment" "app_access_attach" {
   policy_arn = aws_iam_policy.app_access.arn
 }
 
+
+# Instance profile for EC2
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2-app-profile-${random_id.suffix.hex}"
   role = aws_iam_role.ec2_role.name
 }
+
+
+resource "aws_iam_role_policy" "allow_sns_publish" {
+  name = "AllowSNSPublish"
+  role = aws_iam_role.ec2_role.name  # Use the EC2 role resource
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "sns:Publish"
+        ]
+        Resource = "arn:aws:sns:us-east-2:033376538641:pdfUploadNotify"
+      }
+    ]
+  })
+}
+
 
 # -----------------------------
 # Load Balancer
