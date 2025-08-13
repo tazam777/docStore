@@ -17,21 +17,14 @@ public class SnsService {
             @Value("${app.sns.topic-arn}") String topicArn,
             @Value("${AWS_REGION:us-east-2}") String region // falls back to us-east-2
     ) {
-        this.snsClient = SnsClient.builder()
-                .region(Region.of(region))
-                .build();
+        this.snsClient = SnsClient.builder().region(Region.of(region)).build();
         this.topicArn = topicArn;
     }
 
     public void notify(String fileName) {
         String message = "File uploaded is " + fileName;
 
-        PublishRequest req = PublishRequest.builder()
-                .topicArn(topicArn)
-                .subject("New File Upload") // only shows in email subscriptions
-                .message(message)
-                .build();
-
+        PublishRequest req = PublishRequest.builder().topicArn(topicArn).subject("New File Upload of name " +fileName).message(message).build();
         PublishResponse res = snsClient.publish(req);
         System.out.println("SNS published. MessageId=" + res.messageId());
     }

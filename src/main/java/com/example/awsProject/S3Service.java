@@ -23,13 +23,7 @@ public class S3Service {
 
     public String uploadFile(MultipartFile file) throws IOException {
         String key = file.getOriginalFilename(); 
-        s3Client.putObject(
-                PutObjectRequest.builder()
-                        .bucket(bucket)
-                        .key(key)
-                        .build(),
-                RequestBody.fromBytes(file.getBytes())
-        );
+        s3Client.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),RequestBody.fromBytes(file.getBytes()));
         // Return S3 URL for your object
         return String.format("https://%s.s3.amazonaws.com/%s", bucket, key);
     }
@@ -37,15 +31,10 @@ public class S3Service {
 
 
 public List<String> getFile() {
-    ListObjectsV2Request request = ListObjectsV2Request.builder()
-        .bucket(bucket)
-        .build();
-
+    ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(bucket).build();
     ListObjectsV2Response response = s3Client.listObjectsV2(request);
 
-    return response.contents().stream()
-        .map(S3Object::key) // get file names
-        .collect(Collectors.toList());
+    return response.contents().stream() .map(S3Object::key).collect(Collectors.toList());
 }
 
 

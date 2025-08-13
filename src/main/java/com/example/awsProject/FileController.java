@@ -23,9 +23,7 @@ public class FileController {
         try {
             String fileName = file.getOriginalFilename();
             String s3Url = s3Service.uploadFile(file);
-
             snsService.notify(fileName);
-
             return ResponseEntity.ok("File uploaded successfully: " + s3Url);
         } catch (Exception e) {
             e.printStackTrace();
