@@ -2,6 +2,7 @@ package com.example.awsProject;
 
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,13 +36,11 @@ public class FileController {
     @GetMapping("/get")
     public ResponseEntity<String> getFile() {
         try {
-            ArrayList<Object> op= new ArrayList<>();
-            op.add(s3Service.getFile());
-            //System.out.println(s3Service.getFile());
-            return ResponseEntity.ok("Success"+ "\n"+ "Files uploaded are"+ op);
+          String SucessResponse="Success"+ "\n"+ "Files uploaded are : "+ StringUtils.join(s3Service.getFile(), ", ");
+        return ResponseEntity.ok(SucessResponse);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
 }
