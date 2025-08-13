@@ -38,7 +38,7 @@ public class FileController {
             ArrayList<Object> op= new ArrayList<>();
             op.add(s3Service.getFile());
             //System.out.println(s3Service.getFile());
-            return ResponseEntity.ok("Success"+ op);
+            return ResponseEntity.ok("Success"+ "\n"+ "Files uploaded are"+ op);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
